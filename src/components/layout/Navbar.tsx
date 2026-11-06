@@ -2,197 +2,277 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ShoppingBag,
-  Heart,
   Search,
   Menu,
   X,
-  ChevronDown,
+  ArrowRight,
 } from "lucide-react";
-import { useCartStore } from "@/lib/store/useCartStore";
-import { useWishlistStore } from "@/lib/store/useWishlistStore";
 import VuvuLogo from "@/components/ui/VuvuLogo";
+import { useCartStore } from "@/lib/store/useCartStore";
+import { useMounted } from "@/lib/useMounted";
 
-const NAV_LINKS = [
-  { name: "Shop All", href: "/#products" },
-  { name: "Tees", href: "/#tees" },
+const PRIMARY_LINKS = [
+  { name: "Shop", href: "/#products" },
+  { name: "Collections", href: "/#collections" },
+  { name: "About", href: "/#about" },
+];
+
+const SECONDARY_LINKS = [
+  { name: "Tees & Tops", href: "/#tees" },
   { name: "Hoodies", href: "/#hoodies" },
-  { name: "Pants & Utility", href: "/#pants" },
+  { name: "Trousers", href: "/#pants" },
   { name: "Outerwear", href: "/#jackets" },
   { name: "Lookbook", href: "/#lookbook" },
 ];
 
 export default function Navbar() {
+  const router = useRouter();
+  const mounted = useMounted();
   const { openCart, getItemCount } = useCartStore();
-  const { getItemCount: getWishlistCount } = useWishlistStore();
 
-  const [mounted, setMounted] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 24);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Lock body when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
   const cartCount = mounted ? getItemCount() : 0;
-  const wishlistCount = mounted ? getWishlistCount() : 0;
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    setSearchOpen(false);
+    // Smooth scroll to products and let user browse
+    const el = document.getElementById("products");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    } else {
+      router.push("/#products");
+    }
+  };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white">
-      {/* Top Banner */}
-      <div className="bg-[#315074] text-[#F1F9FE] px-4 py-2 text-[11px] font-medium tracking-[0.18em] uppercase flex items-center justify-between transition-colors">
-        <div className="hidden md:flex items-center gap-4 text-xs font-mono">
-          <span>CURRENCY: USD ($)</span>
-          <span>•</span>
-          <span>FREE SHIPPING OVER $100</span>
-        </div>
-        <div className="w-full md:w-auto text-center font-semibold">
-          DROP 01 IS LIVE • LIMITED ARCHIVAL RUN
-        </div>
-        <div className="hidden md:flex items-center gap-4 text-xs">
-          <Link href="/#about" className="hover:underline">
-            OUR MANIFESTO
-          </Link>
-          <span>•</span>
-          <Link href="/#stores" className="hover:underline">
-            FIND A STOCKIST
-          </Link>
-        </div>
-      </div>
-
-      {/* Main Bar */}
-      <nav
-        className={`w-full transition-all duration-300 border-b ${
+    <>
+      <header
+        className={`sticky top-0 z-40 w-full transition-all duration-300 ${
           scrolled
-            ? "border-gray-200/80 bg-white/95 backdrop-blur-md shadow-xs py-3"
-            : "border-gray-100 bg-white py-4"
+            ? "bg-ivory/92 backdrop-blur-md border-b border-line shadow-[0_1px_0_0_rgba(41,43,41,0.04)]"
+            : "bg-ivory border-b border-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Mobile menu trigger */}
-          <button
-            onClick={() => setMobileMenuOpen(true)}
-            className="lg:hidden p-2 -ml-2 text-black hover:text-[#315074] transition-colors"
-            aria-label="Open navigation menu"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
-
-          {/* Desktop Left Navigation Links */}
-          <div className="hidden lg:flex items-center gap-7">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="text-xs uppercase tracking-[0.18em] font-semibold text-neutral-800 hover:text-[#315074] transition-colors relative py-1 group"
-              >
-                {link.name}
-                <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#315074] transition-all duration-300 group-hover:w-full" />
-              </Link>
-            ))}
+        {/* Subtle, restrained top ticker */}
+        <div className="border-b border-line/60 bg-ivory text-charcoal/70 text-[11px] tracking-[0.14em] uppercase py-2 px-4 text-center">
+          <div className="container-vuvu flex items-center justify-between">
+            <span className="hidden md:inline text-muted font-normal">
+              Everyday, Refined.
+            </span>
+            <span className="mx-auto md:mx-0 font-medium text-charcoal">
+              Complimentary shipping on orders over $100
+            </span>
+            <span className="hidden md:inline text-muted font-normal">
+              Worldwide Delivery
+            </span>
           </div>
+        </div>
 
-          {/* Center Brand Logo */}
-          <div className="flex-1 lg:flex-none flex justify-center">
-            <VuvuLogo size="md" />
-          </div>
-
-          {/* Right Action Icons */}
-          <div className="flex items-center gap-3 sm:gap-5">
+        {/* Main Navigation Bar */}
+        <nav
+          className="container-vuvu flex items-center justify-between h-16 lg:h-20"
+          aria-label="Main Navigation"
+        >
+          {/* Left Column: Primary editorial links */}
+          <div className="flex items-center gap-8 flex-1">
             <button
-              onClick={() => {
-                const el = document.getElementById("products");
-                el?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="p-2 text-neutral-800 hover:text-[#315074] transition-colors"
-              aria-label="Search collection"
+              onClick={() => setMobileOpen(true)}
+              className="lg:hidden -ml-2 p-2 text-charcoal hover:text-vuvu-blue transition-colors"
+              aria-label="Open menu"
             >
-              <Search className="w-5 h-5" />
+              <Menu className="w-5 h-5" strokeWidth={1.5} />
             </button>
 
-            {/* Wishlist */}
-            <Link
-              href="/#wishlist"
-              className="relative p-2 text-neutral-800 hover:text-[#315074] transition-colors"
-              aria-label="Wishlist"
-            >
-              <Heart className="w-5 h-5" />
-              {wishlistCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 bg-[#315074] text-white text-[10px] font-bold rounded-full flex items-center justify-center font-mono">
-                  {wishlistCount}
-                </span>
-              )}
-            </Link>
+            <div className="hidden lg:flex items-center gap-8">
+              {PRIMARY_LINKS.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className="text-xs uppercase tracking-[0.14em] font-medium text-charcoal/85 hover:text-charcoal transition-colors link-underline"
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </div>
+          </div>
 
-            {/* Cart Drawer Trigger */}
+          {/* Center Column: Actual VUVU wordmark */}
+          <div className="flex items-center justify-center">
+            <VuvuLogo variant="wordmark" size="md" preload />
+          </div>
+
+          {/* Right Column: Utility actions */}
+          <div className="flex items-center justify-end gap-2 sm:gap-4 flex-1">
+            {/* Search Toggle */}
+            <button
+              onClick={() => setSearchOpen((prev) => !prev)}
+              className="p-2 text-charcoal/80 hover:text-charcoal transition-colors"
+              aria-label="Search collection"
+            >
+              <Search className="w-[18px] h-[18px]" strokeWidth={1.5} />
+            </button>
+
+            {/* Shopping Bag */}
             <button
               onClick={openCart}
-              className="relative flex items-center gap-2 bg-[#F1F9FE] hover:bg-[#315074] hover:text-white text-[#315074] px-3.5 py-2 rounded-full border border-[#315074]/20 transition-all duration-200 group"
-              aria-label="Shopping bag"
+              className="flex items-center gap-2 pl-2 sm:pl-3 py-2 text-charcoal hover:text-vuvu-blue transition-colors group"
+              aria-label={`Shopping bag, ${cartCount} items`}
             >
-              <ShoppingBag className="w-4 h-4" />
-              <span className="text-xs font-bold font-mono tracking-wider">
-                {cartCount}
+              <span className="relative inline-flex items-center">
+                <ShoppingBag className="w-[18px] h-[18px]" strokeWidth={1.5} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1.5 -right-2 min-w-4 h-4 px-1 rounded-full bg-vuvu-blue text-white text-[10px] font-medium flex items-center justify-center leading-none">
+                    {cartCount}
+                  </span>
+                )}
+              </span>
+              <span className="hidden sm:inline text-xs uppercase tracking-[0.14em] font-medium text-charcoal/85 group-hover:text-charcoal">
+                Bag {cartCount > 0 && `(${cartCount})`}
               </span>
             </button>
           </div>
-        </div>
-      </nav>
+        </nav>
 
-      {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setMobileMenuOpen(false)}
-          />
-          <div className="fixed inset-y-0 left-0 w-4/5 max-w-sm bg-white p-6 shadow-2xl flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between pb-6 border-b border-gray-100">
-                <VuvuLogo size="sm" />
+        {/* Dropdown Search Bar */}
+        {searchOpen && (
+          <div className="border-t border-line bg-white/95 backdrop-blur-md px-4 py-4 animate-[fade-in_0.2s_var(--ease-soft)]">
+            <div className="container-vuvu">
+              <form
+                onSubmit={handleSearchSubmit}
+                className="flex items-center gap-3 border-b border-charcoal/30 pb-2 focus-within:border-charcoal transition-colors"
+              >
+                <Search className="w-4 h-4 text-muted" strokeWidth={1.5} />
+                <input
+                  type="search"
+                  autoFocus
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products, silhouettes, fabrics…"
+                  className="flex-1 bg-transparent text-sm text-charcoal placeholder-muted focus:outline-none"
+                />
                 <button
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 text-gray-400 hover:text-black rounded-full"
+                  type="submit"
+                  className="text-xs uppercase tracking-[0.14em] font-medium text-charcoal hover:text-vuvu-blue transition-colors"
                 >
-                  <X className="w-6 h-6" />
+                  Search
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSearchOpen(false)}
+                  className="p-1 text-muted hover:text-charcoal"
+                  aria-label="Close search"
+                >
+                  <X className="w-4 h-4" strokeWidth={1.5} />
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* Mobile Navigation Drawer */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-charcoal/40 backdrop-blur-xs transition-opacity duration-300"
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Drawer content */}
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile Navigation"
+            className="fixed inset-y-0 left-0 w-full max-w-sm bg-ivory p-6 sm:p-8 flex flex-col justify-between shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] animate-[fade-in_0.25s]"
+          >
+            <div>
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between pb-6 border-b border-line">
+                <VuvuLogo variant="wordmark" size="sm" />
+                <button
+                  onClick={() => setMobileOpen(false)}
+                  className="p-2 -mr-2 text-charcoal/70 hover:text-charcoal rounded-full"
+                  aria-label="Close menu"
+                >
+                  <X className="w-5 h-5" strokeWidth={1.5} />
                 </button>
               </div>
 
+              {/* Primary Links */}
               <div className="mt-8 flex flex-col space-y-5">
-                {NAV_LINKS.map((link) => (
+                <p className="eyebrow text-muted">Navigation</p>
+                {PRIMARY_LINKS.map((link) => (
                   <Link
                     key={link.name}
                     href={link.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-base uppercase tracking-widest font-bold text-black hover:text-[#315074] transition-colors"
+                    onClick={() => setMobileOpen(false)}
+                    className="font-display text-2xl font-normal text-charcoal hover:text-vuvu-blue transition-colors"
                   >
                     {link.name}
                   </Link>
                 ))}
               </div>
+
+              {/* Category Sub-nav */}
+              <div className="mt-10 pt-6 border-t border-line flex flex-col space-y-3.5">
+                <p className="eyebrow text-muted">Categories</p>
+                {SECONDARY_LINKS.map((link) => (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="text-sm font-normal text-charcoal/80 hover:text-charcoal transition-colors flex items-center justify-between group"
+                  >
+                    <span>{link.name}</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-muted opacity-0 -translate-x-1 transition-all group-hover:opacity-100 group-hover:translate-x-0" />
+                  </Link>
+                ))}
+              </div>
             </div>
 
-            <div className="pt-6 border-t border-gray-100 space-y-4">
-              <div className="text-xs text-gray-500 font-mono">
-                VUVU WEAR © ALL RIGHTS RESERVED
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="w-3 h-3 rounded-full bg-[#315074] inline-block" />
-                <span className="text-xs uppercase tracking-wider font-semibold text-[#315074]">
-                  Contemporary Apparel
-                </span>
-              </div>
+            {/* Drawer Footer */}
+            <div className="pt-6 border-t border-line text-xs text-muted space-y-2">
+              <p className="font-display text-charcoal font-medium">
+                VUVU — Contemporary Clothing
+              </p>
+              <p className="text-[11px] text-muted">
+                Everyday, Refined. © 2026
+              </p>
             </div>
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }
-

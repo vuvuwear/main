@@ -4,23 +4,24 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartDrawer from "@/components/cart/CartDrawer";
 import ProductDetailView from "@/components/product/ProductDetailView";
+import { getProductBySlug, getProducts } from "@/lib/db";
 import { MOCK_PRODUCTS } from "@/data/mockProducts";
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export function generateStaticParams() {
-  return MOCK_PRODUCTS.map((product) => ({
-    slug: product.slug,
-  }));
-}
+export const instant = false;
 
 export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = MOCK_PRODUCTS.find((p) => p.slug === slug);
+  let product = await getProductBySlug(slug);
+
+  if (!product) {
+    product = MOCK_PRODUCTS.find((p) => p.slug === slug) || null;
+  }
 
   if (!product) {
     return {
@@ -40,18 +41,27 @@ export async function generateMetadata({
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
+  "use cache";
   const { slug } = await params;
-  const product = MOCK_PRODUCTS.find((p) => p.slug === slug);
+  let product = await getProductBySlug(slug);
+
+  if (!product) {
+    product = MOCK_PRODUCTS.find((p) => p.slug === slug) || null;
+  }
 
   if (!product) {
     notFound();
   }
 
-  // Filter 3 related products excluding current product
-  const relatedProducts = MOCK_PRODUCTS.filter((p) => p.id !== product.id).slice(0, 3);
+  // Get related products from DB or fallback
+  const allProducts = await getProducts();
+  const sourceProducts = allProducts.length > 0 ? allProducts : MOCK_PRODUCTS;
+  const relatedProducts = sourceProducts
+    .filter((p) => p.id !== product.id)
+    .slice(0, 3);
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-ivory">
       <Navbar />
       <main className="flex-1">
         <ProductDetailView product={product} relatedProducts={relatedProducts} />
@@ -61,4 +71,3 @@ export default async function ProductPage({ params }: ProductPageProps) {
     </div>
   );
 }
-

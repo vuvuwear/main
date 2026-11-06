@@ -1,26 +1,38 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { SlidersHorizontal, ArrowUpDown } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { Product } from "@/types/product";
 import ProductCard from "./ProductCard";
 
 interface ProductGridProps {
   products: Product[];
+  title?: string;
+  subtitle?: string;
+  eyebrow?: string;
+  initialCategory?: string;
+  id?: string;
 }
 
-export default function ProductGrid({ products }: ProductGridProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<string>("featured");
+const CATEGORIES = [
+  { id: "all", label: "All Items" },
+  { id: "tees", label: "Tees & Tops" },
+  { id: "hoodies", label: "Hoodies" },
+  { id: "pants", label: "Trousers" },
+  { id: "jackets", label: "Outerwear" },
+  { id: "accessories", label: "Accessories" },
+];
 
-  const categories = [
-    { id: "all", label: "All Items" },
-    { id: "tees", label: "Tees & Tops" },
-    { id: "hoodies", label: "Hoodies" },
-    { id: "pants", label: "Pants & Utility" },
-    { id: "jackets", label: "Outerwear" },
-    { id: "accessories", label: "Accessories" },
-  ];
+export default function ProductGrid({
+  products,
+  title = "Considered Silhouettes",
+  subtitle = "Engineered essentials designed with deliberate proportions and enduring materials.",
+  eyebrow = "Catalog // Drop 01",
+  initialCategory = "all",
+  id = "products",
+}: ProductGridProps) {
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
+  const [sortBy, setSortBy] = useState<string>("featured");
 
   const filteredAndSortedProducts = useMemo(() => {
     let result = [...products];
@@ -46,34 +58,36 @@ export default function ProductGrid({ products }: ProductGridProps) {
   }, [products, selectedCategory, sortBy]);
 
   return (
-    <section id="products" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id={id} className="py-20 sm:py-28 bg-white border-t border-line scroll-mt-20">
+      <div className="container-vuvu">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-gray-100 pb-8 mb-8 gap-6">
-          <div>
-            <span className="text-xs font-mono font-bold uppercase tracking-[0.25em] text-[#315074]">
-              Drop 01 Catalog
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-black mt-1">
-              Curated Essentials
+        <div className="flex flex-col md:flex-row md:items-end justify-between pb-8 mb-8 border-b border-line gap-6">
+          <div className="max-w-xl">
+            <span className="eyebrow text-muted block mb-2">{eyebrow}</span>
+            <h2 className="heading text-3xl sm:text-4xl text-charcoal">
+              {title}
             </h2>
+            {subtitle && (
+              <p className="mt-2 text-sm text-muted leading-relaxed">
+                {subtitle}
+              </p>
+            )}
           </div>
 
-          {/* Controls: Category Filter and Sort */}
-          <div className="flex flex-wrap items-center gap-4">
-            {/* Sort selector */}
-            <div className="flex items-center gap-2 bg-[#F1F9FE] px-3 py-2 rounded-lg border border-gray-200 text-xs">
-              <ArrowUpDown className="w-3.5 h-3.5 text-[#315074]" />
-              <label htmlFor="sort-select" className="text-gray-500 font-semibold">
+          {/* Sort selector */}
+          <div className="flex items-center gap-2 self-start md:self-end">
+            <div className="flex items-center gap-2 bg-ivory border border-stone px-3 py-2 text-xs">
+              <ArrowUpDown className="w-3.5 h-3.5 text-muted" strokeWidth={1.5} />
+              <label htmlFor="grid-sort" className="text-muted font-normal">
                 Sort:
               </label>
               <select
-                id="sort-select"
+                id="grid-sort"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-transparent font-bold text-black focus:outline-none cursor-pointer"
+                className="bg-transparent font-medium text-charcoal focus:outline-none cursor-pointer pr-1"
               >
-                <option value="featured">Featured First</option>
+                <option value="featured">Featured</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
                 <option value="rating">Top Rated</option>
@@ -82,9 +96,9 @@ export default function ProductGrid({ products }: ProductGridProps) {
           </div>
         </div>
 
-        {/* Category Pills */}
+        {/* Category Pills — calm, minimal design */}
         <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-10 scrollbar-none">
-          {categories.map((cat) => {
+          {CATEGORIES.map((cat) => {
             const count =
               cat.id === "all"
                 ? products.length
@@ -96,10 +110,10 @@ export default function ProductGrid({ products }: ProductGridProps) {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                className={`flex-shrink-0 px-4 py-2 text-xs tracking-[0.12em] uppercase font-medium transition-colors ${
                   isActive
-                    ? "bg-[#315074] text-white shadow-sm"
-                    : "bg-[#F1F9FE] text-gray-700 hover:bg-gray-200"
+                    ? "bg-charcoal text-white"
+                    : "bg-ivory text-charcoal/80 hover:bg-stone/60 border border-stone/50"
                 }`}
               >
                 {cat.label} ({count})
@@ -108,24 +122,24 @@ export default function ProductGrid({ products }: ProductGridProps) {
           })}
         </div>
 
-        {/* Products Grid */}
+        {/* Product Grid */}
         {filteredAndSortedProducts.length === 0 ? (
-          <div className="text-center py-24 bg-[#F1F9FE] rounded-xl p-8">
-            <h3 className="text-lg font-bold uppercase text-black">
-              No Pieces Found
+          <div className="text-center py-20 bg-ivory border border-line p-8">
+            <h3 className="font-display text-lg text-charcoal">
+              No items in this category
             </h3>
-            <p className="text-sm text-gray-500 mt-1">
-              Try switching your category filter or check back for upcoming drops.
+            <p className="text-xs text-muted mt-1 max-w-sm mx-auto">
+              Select another category or view all garments from the current drop.
             </p>
             <button
               onClick={() => setSelectedCategory("all")}
-              className="mt-6 bg-[#315074] text-white px-6 py-2.5 text-xs uppercase tracking-widest font-bold rounded"
+              className="mt-6 btn btn-outline"
             >
               Reset Filters
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {filteredAndSortedProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -135,4 +149,3 @@ export default function ProductGrid({ products }: ProductGridProps) {
     </section>
   );
 }
-

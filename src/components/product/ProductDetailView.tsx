@@ -4,20 +4,17 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Star,
   Heart,
   ShoppingBag,
   Ruler,
-  ShieldCheck,
   Truck,
   RotateCcw,
-  Sparkles,
+  ShieldCheck,
   ChevronRight,
   Plus,
   Minus,
   Check,
   X,
-  Layers,
 } from "lucide-react";
 import { Product, ProductSize } from "@/types/product";
 import { useCartStore } from "@/lib/store/useCartStore";
@@ -33,7 +30,7 @@ export default function ProductDetailView({
   product,
   relatedProducts,
 }: ProductDetailViewProps) {
-  const { addItem, openCart } = useCartStore();
+  const { addItem } = useCartStore();
   const { toggleWishlist, isInWishlist } = useWishlistStore();
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -41,7 +38,7 @@ export default function ProductDetailView({
   const [selectedSize, setSelectedSize] = useState<ProductSize>("M");
   const [quantity, setQuantity] = useState(1);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"fabric" | "fit" | "care" | "shipping">("fabric");
+  const [activeTab, setActiveTab] = useState<"fabric" | "fit" | "care" | "delivery">("fabric");
   const [isAdded, setIsAdded] = useState(false);
 
   const activeColor = product.colors[selectedColorIndex] || product.colors[0];
@@ -60,75 +57,86 @@ export default function ProductDetailView({
     : null;
 
   return (
-    <div className="bg-white">
-      {/* Breadcrumb Navigation */}
-      <nav className="border-b border-gray-100 bg-[#F1F9FE]/50 py-3">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 text-xs text-gray-500 font-mono">
-          <Link href="/" className="hover:text-black transition-colors">
-            HOME
+    <div className="bg-ivory">
+      {/* ------------------------------------------------------------------
+          Breadcrumb — quiet, restrained
+          ------------------------------------------------------------------ */}
+      <nav
+        aria-label="Breadcrumb"
+        className="border-b border-line bg-white/60 py-3.5"
+      >
+        <div className="container-vuvu flex items-center gap-2 text-xs text-muted">
+          <Link href="/" className="hover:text-charcoal transition-colors">
+            Home
           </Link>
-          <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+          <ChevronRight className="w-3 h-3 text-stone" />
           <Link
             href={`/#${product.category}`}
-            className="hover:text-black uppercase transition-colors"
+            className="hover:text-charcoal uppercase transition-colors"
           >
             {product.category}
           </Link>
-          <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
-          <span className="text-black font-semibold truncate max-w-xs">
+          <ChevronRight className="w-3 h-3 text-stone" />
+          <span className="text-charcoal font-medium truncate max-w-xs">
             {product.name}
           </span>
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
+      {/* ------------------------------------------------------------------
+          Main PDP Gallery and Info
+          ------------------------------------------------------------------ */}
+      <div className="container-vuvu py-10 lg:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          {/* Left Column: Image Gallery (7 cols on lg) */}
+          {/* Left Column: Image Presentation (7 cols on lg) */}
           <div className="lg:col-span-7 flex flex-col-reverse md:flex-row gap-4">
             {/* Thumbnail Strip */}
-            <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto max-h-[640px] scrollbar-none">
-              {product.images.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveImageIndex(idx)}
-                  className={`relative w-20 h-24 md:w-24 md:h-32 flex-shrink-0 rounded-md overflow-hidden bg-[#F1F9FE] border-2 transition-all ${
-                    activeImageIndex === idx
-                      ? "border-[#315074] shadow-sm scale-102"
-                      : "border-transparent opacity-70 hover:opacity-100"
-                  }`}
-                >
-                  <Image
-                    src={img}
-                    alt={`${product.name} view ${idx + 1}`}
-                    fill
-                    sizes="96px"
-                    className="object-cover"
-                  />
-                </button>
-              ))}
-            </div>
+            {product.images.length > 1 && (
+              <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto max-h-[720px] scrollbar-none">
+                {product.images.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveImageIndex(idx)}
+                    className={`relative w-20 h-24 md:w-24 md:h-32 flex-shrink-0 bg-white border transition-all ${
+                      activeImageIndex === idx
+                        ? "border-charcoal shadow-xs"
+                        : "border-line opacity-75 hover:opacity-100"
+                    }`}
+                    aria-label={`Show photo ${idx + 1}`}
+                  >
+                    <Image
+                      src={img}
+                      alt={`${product.name} view ${idx + 1}`}
+                      fill
+                      sizes="96px"
+                      className="object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Main Stage Image */}
-            <div className="relative flex-1 aspect-[3/4] rounded-lg overflow-hidden bg-[#F1F9FE] border border-gray-100 shadow-sm">
+            <div className="relative flex-1 aspect-[3/4] bg-white border border-line overflow-hidden">
               <Image
                 src={product.images[activeImageIndex] || product.images[0]}
                 alt={product.name}
                 fill
-                priority
+                preload
                 sizes="(max-width: 1024px) 100vw, 55vw"
                 className="object-cover object-center transition-all duration-300"
               />
 
               {/* Badge */}
               {product.badge && (
-                <div className="absolute top-4 left-4">
+                <div className="absolute top-4 left-4 z-10">
                   <span
-                    className={`px-3 py-1 text-xs font-bold tracking-widest uppercase rounded shadow-xs ${
+                    className={`px-3 py-1 text-[10px] tracking-[0.14em] font-medium uppercase ${
                       product.badge === "NEW DROP"
-                        ? "bg-[#315074] text-white"
+                        ? "bg-vuvu-blue text-white"
                         : product.badge === "BESTSELLER"
-                        ? "bg-black text-white"
-                        : "bg-amber-600 text-white"
+                        ? "bg-charcoal text-white"
+                        : "bg-white text-charcoal border border-line"
                     }`}
                   >
                     {product.badge}
@@ -136,77 +144,75 @@ export default function ProductDetailView({
                 </div>
               )}
 
-              {/* Wishlist Icon */}
+              {/* Wishlist Button */}
               <button
                 onClick={() => toggleWishlist(product)}
-                className="absolute top-4 right-4 p-2.5 rounded-full bg-white/90 backdrop-blur-sm text-neutral-800 hover:text-rose-600 shadow-md transition-colors"
-                aria-label="Toggle wishlist"
+                className="absolute top-4 right-4 z-10 p-2.5 rounded-full bg-white/80 backdrop-blur-xs text-charcoal hover:bg-white shadow-xs transition-colors"
+                aria-label={
+                  inWishlist ? "Remove from wishlist" : "Save to wishlist"
+                }
               >
                 <Heart
-                  className={`w-5 h-5 ${
-                    inWishlist ? "fill-rose-600 text-rose-600" : ""
+                  className={`w-4 h-4 transition-colors ${
+                    inWishlist ? "fill-vuvu-blue text-vuvu-blue" : ""
                   }`}
+                  strokeWidth={1.5}
                 />
               </button>
             </div>
           </div>
 
-          {/* Right Column: Product Purchasing & Specs (5 cols on lg) */}
+          {/* Right Column: Purchasing & Specifications (5 cols on lg) */}
           <div className="lg:col-span-5 flex flex-col justify-start">
-            {/* Header info */}
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <div className="flex items-center text-amber-500 text-xs">
-                  <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                  <span className="font-mono font-bold text-black ml-1">
-                    {product.rating}
-                  </span>
-                </div>
-                <span className="text-gray-400 text-xs">•</span>
-                <span className="text-xs text-gray-500 underline font-mono">
-                  {product.reviewCount} Verified Reviews
+              <div className="flex items-center gap-3 text-xs text-muted mb-2">
+                <span className="eyebrow text-vuvu-blue">
+                  {product.category}
                 </span>
-                <span className="text-gray-400 text-xs">•</span>
-                <span className="text-[11px] font-mono text-[#315074] font-bold">
-                  IN STOCK
+                <span className="text-stone">•</span>
+                <span className="text-[11px] font-mono text-muted">
+                  {product.reviewCount} Verified Reviews
                 </span>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-black leading-tight">
+              <h1 className="heading text-2xl sm:text-3xl text-charcoal">
                 {product.name}
               </h1>
 
-              <p className="text-xs text-[#315074] font-medium tracking-wide mt-1">
+              <p className="text-xs text-muted mt-1 leading-relaxed">
                 {product.tagline}
               </p>
 
               {/* Price */}
-              <div className="mt-4 flex items-baseline gap-3">
-                <span className="text-2xl font-black font-mono text-black">
+              <div className="mt-5 flex items-baseline gap-3">
+                <span className="text-2xl font-normal font-mono text-charcoal">
                   ${product.price}.00
                 </span>
                 {product.originalPrice && (
                   <>
-                    <span className="text-sm font-mono text-gray-400 line-through">
+                    <span className="text-sm font-mono text-muted line-through">
                       ${product.originalPrice}.00
                     </span>
-                    <span className="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded font-mono">
-                      SAVE {discountPercent}%
+                    <span className="text-xs font-mono text-vuvu-blue bg-white border border-stone px-2 py-0.5">
+                      Save {discountPercent}%
                     </span>
                   </>
                 )}
               </div>
             </div>
 
-            <div className="w-full h-px bg-gray-100 my-6" />
+            <div className="w-full h-px bg-line my-6" />
 
-            {/* Color Swatches */}
-            <div>
+            {/* Description */}
+            <p className="text-xs text-charcoal/80 leading-relaxed font-light">
+              {product.description}
+            </p>
+
+            {/* Colorway Swatches */}
+            <div className="mt-6">
               <div className="flex justify-between items-center text-xs mb-2.5">
-                <span className="font-bold uppercase tracking-wider text-black">
-                  Colorway:
-                </span>
-                <span className="font-semibold text-[#315074]">
+                <span className="eyebrow text-charcoal">Colorway:</span>
+                <span className="text-xs font-medium text-charcoal">
                   {activeColor.name}
                 </span>
               </div>
@@ -217,12 +223,13 @@ export default function ProductDetailView({
                     onClick={() => setSelectedColorIndex(idx)}
                     className={`relative p-0.5 rounded-full transition-all ${
                       selectedColorIndex === idx
-                        ? "ring-2 ring-offset-2 ring-[#315074] scale-110"
-                        : "hover:scale-105 opacity-80 hover:opacity-100"
+                        ? "ring-1 ring-offset-2 ring-charcoal"
+                        : "opacity-80 hover:opacity-100"
                     }`}
+                    aria-label={`Select ${color.name}`}
                   >
                     <span
-                      className="w-7 h-7 rounded-full border border-gray-300 block shadow-inner"
+                      className="w-6 h-6 rounded-full border border-stone block"
                       style={{ backgroundColor: color.hex }}
                     />
                   </button>
@@ -233,15 +240,13 @@ export default function ProductDetailView({
             {/* Size Selector */}
             <div className="mt-6">
               <div className="flex justify-between items-center text-xs mb-2.5">
-                <span className="font-bold uppercase tracking-wider text-black">
-                  Select Size:
-                </span>
+                <span className="eyebrow text-charcoal">Select Size:</span>
                 <button
                   onClick={() => setSizeGuideOpen(true)}
-                  className="inline-flex items-center gap-1 text-[#315074] hover:text-black font-semibold transition-colors"
+                  className="inline-flex items-center gap-1 text-xs text-charcoal/80 hover:text-vuvu-blue transition-colors link-underline"
                 >
-                  <Ruler className="w-3.5 h-3.5" />
-                  <span>Size & Measurement Guide</span>
+                  <Ruler className="w-3.5 h-3.5" strokeWidth={1.5} />
+                  <span>Size Guide</span>
                 </button>
               </div>
 
@@ -251,12 +256,12 @@ export default function ProductDetailView({
                     key={s.size}
                     disabled={!s.inStock}
                     onClick={() => setSelectedSize(s.size)}
-                    className={`py-3 text-xs font-mono font-bold rounded border text-center transition-all ${
+                    className={`py-3 text-xs font-mono transition-all border ${
                       !s.inStock
-                        ? "text-gray-300 bg-gray-50 border-gray-100 cursor-not-allowed line-through"
+                        ? "text-stone bg-ivory/50 border-line/60 cursor-not-allowed line-through"
                         : selectedSize === s.size
-                        ? "bg-[#315074] text-white border-[#315074] shadow-sm"
-                        : "bg-white text-black border-gray-200 hover:border-[#315074] hover:bg-[#F1F9FE]"
+                        ? "bg-charcoal text-white border-charcoal font-medium"
+                        : "bg-white text-charcoal border-line hover:border-charcoal"
                     }`}
                   >
                     {s.size}
@@ -267,34 +272,32 @@ export default function ProductDetailView({
 
             {/* Quantity and Add to Bag */}
             <div className="mt-8 flex gap-3">
-              {/* Quantity input */}
-              <div className="flex items-center border border-gray-200 rounded px-2 bg-white">
+              {/* Quantity selector */}
+              <div className="flex items-center border border-stone bg-white">
                 <button
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="p-2 text-gray-500 hover:text-black transition-colors"
+                  className="p-3 text-muted hover:text-charcoal hover:bg-ivory transition-colors"
                   aria-label="Decrease quantity"
                 >
-                  <Minus className="w-3.5 h-3.5" />
+                  <Minus className="w-3.5 h-3.5" strokeWidth={1.5} />
                 </button>
-                <span className="w-8 text-center text-xs font-mono font-bold text-black">
+                <span className="w-8 text-center text-xs font-mono font-medium text-charcoal">
                   {quantity}
                 </span>
                 <button
                   onClick={() => setQuantity((q) => q + 1)}
-                  className="p-2 text-gray-500 hover:text-black transition-colors"
+                  className="p-3 text-muted hover:text-charcoal hover:bg-ivory transition-colors"
                   aria-label="Increase quantity"
                 >
-                  <Plus className="w-3.5 h-3.5" />
+                  <Plus className="w-3.5 h-3.5" strokeWidth={1.5} />
                 </button>
               </div>
 
               {/* Add to Bag CTA */}
               <button
                 onClick={handleAddToCart}
-                className={`flex-1 py-4 px-6 font-bold text-xs uppercase tracking-[0.25em] flex items-center justify-center gap-2 transition-all duration-300 shadow-md ${
-                  isAdded
-                    ? "bg-emerald-700 text-white"
-                    : "bg-[#000000] hover:bg-[#315074] text-white"
+                className={`btn flex-1 transition-all duration-300 ${
+                  isAdded ? "btn-brand" : "btn-primary"
                 }`}
               >
                 {isAdded ? (
@@ -304,86 +307,88 @@ export default function ProductDetailView({
                   </>
                 ) : (
                   <>
-                    <ShoppingBag className="w-4 h-4" />
-                    <span>Add To Bag • ${(product.price * quantity).toFixed(2)}</span>
+                    <ShoppingBag className="w-4 h-4" strokeWidth={1.5} />
+                    <span>
+                      Add To Bag • ${(product.price * quantity).toFixed(2)}
+                    </span>
                   </>
                 )}
               </button>
             </div>
 
-            {/* Fast Delivery & Trust Highlights */}
-            <div className="mt-6 p-4 rounded-lg bg-[#F1F9FE] border border-[#315074]/15 space-y-2.5 text-xs text-gray-700">
+            {/* Service & Trust Points */}
+            <div className="mt-8 p-4 bg-white border border-line space-y-2.5 text-xs text-charcoal/85">
               <div className="flex items-center gap-2.5">
-                <Truck className="w-4 h-4 text-[#315074] flex-shrink-0" />
+                <Truck className="w-4 h-4 text-vuvu-blue flex-shrink-0" strokeWidth={1.5} />
                 <span>
-                  <strong>Complimentary Shipping</strong> on all orders over $100.
+                  <strong>Complimentary delivery</strong> on all orders over $100.
                 </span>
               </div>
               <div className="flex items-center gap-2.5">
-                <RotateCcw className="w-4 h-4 text-[#315074] flex-shrink-0" />
+                <RotateCcw className="w-4 h-4 text-vuvu-blue flex-shrink-0" strokeWidth={1.5} />
                 <span>
-                  <strong>30-Day Hassle-Free Returns</strong> with pre-paid return labels.
+                  <strong>30-day returns</strong> with pre-paid return labels.
                 </span>
               </div>
               <div className="flex items-center gap-2.5">
-                <ShieldCheck className="w-4 h-4 text-[#315074] flex-shrink-0" />
+                <ShieldCheck className="w-4 h-4 text-vuvu-blue flex-shrink-0" strokeWidth={1.5} />
                 <span>
-                  <strong>Guaranteed Longevity</strong> — Pre-shrunk 100% Egyptian cotton.
+                  <strong>Pre-shrunk fabric</strong> — guaranteed shape permanence.
                 </span>
               </div>
             </div>
 
-            {/* Garment Specifications Tabs */}
-            <div className="mt-8 border-t border-gray-100 pt-6">
-              <div className="flex border-b border-gray-200">
+            {/* Tabs for Fabric, Fit, Care, Delivery */}
+            <div className="mt-8 border-t border-line pt-6">
+              <div className="flex border-b border-line gap-6">
                 <button
                   onClick={() => setActiveTab("fabric")}
-                  className={`pb-3 text-xs font-bold uppercase tracking-wider transition-colors relative mr-6 ${
+                  className={`pb-3 text-xs uppercase tracking-[0.12em] font-medium transition-colors relative ${
                     activeTab === "fabric"
-                      ? "text-[#315074]"
-                      : "text-gray-400 hover:text-black"
+                      ? "text-charcoal"
+                      : "text-muted hover:text-charcoal"
                   }`}
                 >
-                  Fabric & GSM
+                  Fabric & Origin
                   {activeTab === "fabric" && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#315074]" />
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-charcoal" />
                   )}
                 </button>
 
                 <button
                   onClick={() => setActiveTab("fit")}
-                  className={`pb-3 text-xs font-bold uppercase tracking-wider transition-colors relative mr-6 ${
+                  className={`pb-3 text-xs uppercase tracking-[0.12em] font-medium transition-colors relative ${
                     activeTab === "fit"
-                      ? "text-[#315074]"
-                      : "text-gray-400 hover:text-black"
+                      ? "text-charcoal"
+                      : "text-muted hover:text-charcoal"
                   }`}
                 >
-                  Silhouette & Cut
+                  Fit & Cut
                   {activeTab === "fit" && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#315074]" />
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-charcoal" />
                   )}
                 </button>
 
                 <button
                   onClick={() => setActiveTab("care")}
-                  className={`pb-3 text-xs font-bold uppercase tracking-wider transition-colors relative mr-6 ${
+                  className={`pb-3 text-xs uppercase tracking-[0.12em] font-medium transition-colors relative ${
                     activeTab === "care"
-                      ? "text-[#315074]"
-                      : "text-gray-400 hover:text-black"
+                      ? "text-charcoal"
+                      : "text-muted hover:text-charcoal"
                   }`}
                 >
                   Garment Care
                   {activeTab === "care" && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#315074]" />
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-charcoal" />
                   )}
                 </button>
               </div>
 
-              <div className="py-4 text-xs text-gray-600 leading-relaxed">
+              <div className="py-4 text-xs text-muted leading-relaxed font-light">
                 {activeTab === "fabric" && (
                   <div className="space-y-2">
-                    <p className="font-semibold text-black">{product.fabric}</p>
-                    <ul className="list-disc pl-4 space-y-1 text-gray-500">
+                    <p className="font-medium text-charcoal">{product.fabric}</p>
+                    <ul className="list-disc pl-4 space-y-1 text-muted">
                       {product.details.map((detail, idx) => (
                         <li key={idx}>{detail}</li>
                       ))}
@@ -393,19 +398,19 @@ export default function ProductDetailView({
 
                 {activeTab === "fit" && (
                   <div>
-                    <p className="font-semibold text-black mb-1">{product.fit}</p>
-                    <p className="text-gray-500">
-                      Engineered with a contemporary drop shoulder and generous chest volume. Designed to drape without clinging. If you prefer a tailored/slim profile, we suggest sizing down one size.
+                    <p className="font-medium text-charcoal mb-1">{product.fit}</p>
+                    <p>
+                      Engineered with a contemporary drop shoulder and generous chest volume. Designed to drape naturally without clinging. If you prefer a closer, tailored profile, we suggest sizing down one size.
                     </p>
                   </div>
                 )}
 
                 {activeTab === "care" && (
-                  <div className="space-y-1.5 text-gray-500">
-                    <p>• Machine wash cold (30°C / 85°F) with like colors.</p>
-                    <p>• Wash and iron garment inside out to preserve cotton pile.</p>
-                    <p>• Hang dry in shade recommended; do not tumble dry.</p>
-                    <p>• Do not bleach or use chlorine-based chemicals.</p>
+                  <div className="space-y-1.5 text-muted">
+                    <p>• Machine wash cold (30°C / 85°F) with similar tones.</p>
+                    <p>• Wash inside out to protect the surface weave.</p>
+                    <p>• Line dry in shade; do not tumble dry.</p>
+                    <p>• Warm iron inside out if desired.</p>
                   </div>
                 )}
               </div>
@@ -413,23 +418,25 @@ export default function ProductDetailView({
           </div>
         </div>
 
-        {/* Complete the Look Section */}
+        {/* ------------------------------------------------------------------
+            Related Products — Complete the Silhouette
+            ------------------------------------------------------------------ */}
         {relatedProducts.length > 0 && (
-          <div className="mt-24 pt-16 border-t border-gray-100">
-            <div className="flex justify-between items-end mb-8">
+          <div className="mt-24 pt-16 border-t border-line">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-8 mb-8 border-b border-line gap-4">
               <div>
-                <span className="text-xs font-mono font-bold uppercase tracking-[0.25em] text-[#315074]">
-                  CURATED STYLING
+                <span className="eyebrow text-muted block mb-1">
+                  Considered Pairings
                 </span>
-                <h3 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-black mt-1">
-                  Complete The Silhouette
-                </h3>
+                <h2 className="heading text-2xl sm:text-3xl text-charcoal">
+                  Complete the Silhouette
+                </h2>
               </div>
               <Link
                 href="/#products"
-                className="text-xs font-bold uppercase tracking-wider text-[#315074] hover:underline"
+                className="text-xs uppercase tracking-[0.12em] font-medium text-charcoal hover:text-vuvu-blue transition-colors link-underline self-start sm:self-end"
               >
-                View Full Wardrobe
+                View All Wardrobe
               </Link>
             </div>
 
@@ -446,60 +453,67 @@ export default function ProductDetailView({
       {sizeGuideOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
-            className="fixed inset-0 bg-black/75 backdrop-blur-sm"
+            className="fixed inset-0 bg-charcoal/50 backdrop-blur-xs transition-opacity"
             onClick={() => setSizeGuideOpen(false)}
+            aria-hidden="true"
           />
-          <div className="relative bg-white text-black max-w-lg w-full rounded-xl p-6 sm:p-8 shadow-2xl z-10">
-            <div className="flex justify-between items-center pb-4 border-b border-gray-100">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Measurement Guide"
+            className="relative bg-white text-charcoal max-w-lg w-full p-6 sm:p-8 shadow-2xl z-10 border border-line animate-[fade-in_0.2s_var(--ease-soft)]"
+          >
+            <div className="flex justify-between items-center pb-4 border-b border-line">
               <div className="flex items-center gap-2">
-                <Ruler className="w-5 h-5 text-[#315074]" />
-                <h3 className="text-base font-bold uppercase tracking-wider">
-                  VUVU Measurement Guide
+                <Ruler className="w-4 h-4 text-vuvu-blue" strokeWidth={1.5} />
+                <h3 className="font-display text-lg text-charcoal">
+                  VUVU Sizing Chart
                 </h3>
               </div>
               <button
                 onClick={() => setSizeGuideOpen(false)}
-                className="p-1 rounded-full hover:bg-gray-100 text-gray-500 hover:text-black"
+                className="p-1.5 text-muted hover:text-charcoal rounded-full"
+                aria-label="Close"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5" strokeWidth={1.5} />
               </button>
             </div>
 
-            <div className="mt-4 text-xs text-gray-500">
-              Measurements taken flat in centimeters (cm):
+            <div className="mt-4 text-xs text-muted">
+              Flat measurements in centimeters (cm):
             </div>
 
-            <div className="mt-4 overflow-x-auto">
+            <div className="mt-4 overflow-x-auto border border-line">
               <table className="w-full text-xs text-left">
-                <thead className="bg-[#F1F9FE] text-[#315074] uppercase font-mono font-bold">
+                <thead className="bg-ivory text-charcoal uppercase font-mono font-medium border-b border-line">
                   <tr>
                     <th className="py-2.5 px-3">Size</th>
-                    <th className="py-2.5 px-3">Chest (Width)</th>
+                    <th className="py-2.5 px-3">Chest Width</th>
                     <th className="py-2.5 px-3">Length</th>
                     <th className="py-2.5 px-3">Shoulder</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 font-mono">
+                <tbody className="divide-y divide-line font-mono">
                   <tr>
-                    <td className="py-2.5 px-3 font-bold">S</td>
+                    <td className="py-2.5 px-3 font-bold text-charcoal">S</td>
                     <td className="py-2.5 px-3">58 cm</td>
                     <td className="py-2.5 px-3">71 cm</td>
                     <td className="py-2.5 px-3">55 cm</td>
                   </tr>
-                  <tr className="bg-gray-50/50">
-                    <td className="py-2.5 px-3 font-bold">M</td>
+                  <tr className="bg-ivory/30">
+                    <td className="py-2.5 px-3 font-bold text-charcoal">M</td>
                     <td className="py-2.5 px-3">61 cm</td>
                     <td className="py-2.5 px-3">73 cm</td>
                     <td className="py-2.5 px-3">57 cm</td>
                   </tr>
                   <tr>
-                    <td className="py-2.5 px-3 font-bold">L</td>
+                    <td className="py-2.5 px-3 font-bold text-charcoal">L</td>
                     <td className="py-2.5 px-3">64 cm</td>
                     <td className="py-2.5 px-3">75 cm</td>
                     <td className="py-2.5 px-3">59 cm</td>
                   </tr>
-                  <tr className="bg-gray-50/50">
-                    <td className="py-2.5 px-3 font-bold">XL</td>
+                  <tr className="bg-ivory/30">
+                    <td className="py-2.5 px-3 font-bold text-charcoal">XL</td>
                     <td className="py-2.5 px-3">67 cm</td>
                     <td className="py-2.5 px-3">77 cm</td>
                     <td className="py-2.5 px-3">61 cm</td>
@@ -511,7 +525,7 @@ export default function ProductDetailView({
             <div className="mt-6 flex justify-end">
               <button
                 onClick={() => setSizeGuideOpen(false)}
-                className="bg-[#315074] text-white px-6 py-2 text-xs font-bold uppercase tracking-wider rounded"
+                className="btn btn-primary text-xs"
               >
                 Close
               </button>
@@ -522,4 +536,3 @@ export default function ProductDetailView({
     </div>
   );
 }
-

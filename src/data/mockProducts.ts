@@ -23,9 +23,9 @@ export const MOCK_PRODUCTS: Product[] = [
     badge: "BESTSELLER",
     tags: ["Tees", "Heavyweight", "Essentials", "Oversized"],
     colors: [
-      { name: "Steel Blue", hex: "#315074" },
-      { name: "Obsidian Black", hex: "#000000" },
-      { name: "Ice White", hex: "#F1F9FE" },
+      { name: "VUVU Blue", hex: "#285477" },
+      { name: "Charcoal", hex: "#292B29" },
+      { name: "Warm Ivory", hex: "#F3F0E9" },
     ],
     sizes: [
       { size: "S", inStock: true },
@@ -65,9 +65,9 @@ export const MOCK_PRODUCTS: Product[] = [
     badge: "NEW DROP",
     tags: ["Hoodies", "French Terry", "Winter", "Heavyweight"],
     colors: [
-      { name: "Steel Blue", hex: "#315074" },
-      { name: "Ice Mist", hex: "#F1F9FE" },
-      { name: "Pitch Black", hex: "#000000" },
+      { name: "VUVU Blue", hex: "#285477" },
+      { name: "Warm Ivory", hex: "#F3F0E9" },
+      { name: "Charcoal", hex: "#292B29" },
     ],
     sizes: [
       { size: "S", inStock: true },
@@ -105,8 +105,8 @@ export const MOCK_PRODUCTS: Product[] = [
     badge: "LIMITED",
     tags: ["Pants", "Utility", "Tailored", "Streetwear"],
     colors: [
-      { name: "Obsidian Black", hex: "#000000" },
-      { name: "Deep Navy Blue", hex: "#315074" },
+      { name: "Charcoal", hex: "#292B29" },
+      { name: "VUVU Blue", hex: "#285477" },
     ],
     sizes: [
       { size: "S", inStock: true },
@@ -143,9 +143,9 @@ export const MOCK_PRODUCTS: Product[] = [
     badge: "NEW DROP",
     tags: ["Jackets", "Outerwear", "Waterproof", "Nylon"],
     colors: [
-      { name: "Steel Blue", hex: "#315074" },
-      { name: "Obsidian Black", hex: "#000000" },
-      { name: "Ice Gray", hex: "#F1F9FE" },
+      { name: "VUVU Blue", hex: "#285477" },
+      { name: "Charcoal", hex: "#292B29" },
+      { name: "Stone", hex: "#D8D1C5" },
     ],
     sizes: [
       { size: "S", inStock: true },
@@ -181,9 +181,9 @@ export const MOCK_PRODUCTS: Product[] = [
     badge: "BESTSELLER",
     tags: ["Sweatshirts", "Mockneck", "Fleece"],
     colors: [
-      { name: "Ice White", hex: "#F1F9FE" },
-      { name: "Steel Blue", hex: "#315074" },
-      { name: "Obsidian Black", hex: "#000000" },
+      { name: "Warm Ivory", hex: "#F3F0E9" },
+      { name: "VUVU Blue", hex: "#285477" },
+      { name: "Charcoal", hex: "#292B29" },
     ],
     sizes: [
       { size: "S", inStock: true },
@@ -219,9 +219,9 @@ export const MOCK_PRODUCTS: Product[] = [
     badge: "LIMITED",
     tags: ["Accessories", "Headwear", "Caps"],
     colors: [
-      { name: "Steel Blue", hex: "#315074" },
-      { name: "Pitch Black", hex: "#000000" },
-      { name: "Pure White", hex: "#FFFFFF" },
+      { name: "VUVU Blue", hex: "#285477" },
+      { name: "Charcoal", hex: "#292B29" },
+      { name: "Warm Ivory", hex: "#F3F0E9" },
     ],
     sizes: [{ size: "M", inStock: true }],
     images: [

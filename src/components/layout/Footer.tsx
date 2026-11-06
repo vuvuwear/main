@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowUpRight, Check } from "lucide-react";
 import VuvuLogo from "@/components/ui/VuvuLogo";
 
 export default function Footer() {
@@ -11,192 +11,282 @@ export default function Footer() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
+    if (email.trim()) {
       setSubscribed(true);
       setEmail("");
     }
   };
 
   return (
-    <footer className="bg-[#000000] text-white border-t border-white/10">
-      {/* Newsletter Section */}
-      <div className="border-b border-white/10 bg-[#0f1722]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-            <div>
-              <span className="text-xs font-mono font-bold uppercase tracking-[0.3em] text-[#315074] bg-[#F1F9FE] px-2.5 py-1 rounded">
-                EXCLUSIVE ACCESS
-              </span>
-              <h3 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white mt-3">
-                Join the VUVU Syndicate
-              </h3>
-              <p className="text-sm text-gray-400 mt-2 max-w-md font-light">
-                Receive private password drop access 2 hours before public release, archival lookbooks, and 10% off your first order.
-              </p>
-            </div>
+    <footer className="bg-ivory border-t border-line text-charcoal">
+      {/* ------------------------------------------------------------------
+          Newsletter section — Scandinavian editorial treatment
+          ------------------------------------------------------------------ */}
+      <section
+        aria-labelledby="newsletter-heading"
+        className="border-b border-line py-16 sm:py-24"
+      >
+        <div className="container-vuvu">
+          <div className="max-w-2xl mx-auto text-center">
+            <span className="eyebrow text-muted block mb-3">Newsletter</span>
+            <h2
+              id="newsletter-heading"
+              className="display text-3xl sm:text-4xl text-charcoal"
+            >
+              STAY IN THE KNOW.
+            </h2>
+            <p className="mt-3 text-sm sm:text-base text-muted max-w-md mx-auto leading-relaxed">
+              Discover new collections, releases, and stories from VUVU.
+            </p>
 
-            <div>
+            <div className="mt-8">
               {subscribed ? (
-                <div className="flex items-center gap-3 bg-[#315074]/30 border border-[#315074] p-4 rounded text-white">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                  <span className="text-xs uppercase tracking-wider font-semibold">
-                    Welcome to the Syndicate. Check your inbox for your 10% welcome code.
-                  </span>
+                <div className="inline-flex items-center gap-2.5 bg-white border border-stone px-5 py-3 text-xs text-charcoal">
+                  <Check className="w-4 h-4 text-vuvu-blue" />
+                  <span>You are subscribed to the VUVU newsletter.</span>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
+                <form
+                  onSubmit={handleSubmit}
+                  className="flex flex-col sm:flex-row max-w-md mx-auto gap-2"
+                >
+                  <label htmlFor="footer-email" className="sr-only">
+                    Email address
+                  </label>
                   <input
+                    id="footer-email"
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email address"
-                    className="flex-1 bg-white/5 border border-white/20 px-4 py-3 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#315074] focus:bg-white/10 transition-colors"
+                    className="field flex-1 bg-white text-xs sm:text-sm"
                   />
                   <button
                     type="submit"
-                    className="bg-[#315074] hover:bg-[#4872a4] text-white font-bold px-6 py-3 text-xs uppercase tracking-[0.2em] transition-colors flex items-center justify-center gap-2 group"
+                    className="btn btn-primary sm:w-auto"
                   >
-                    <span>Subscribe</span>
-                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    Subscribe
                   </button>
                 </form>
               )}
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Main Footer Links */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
-          {/* Brand Info */}
-          <div className="lg:col-span-2">
-            <VuvuLogo size="md" />
-            <p className="text-xs text-gray-400 mt-4 max-w-sm leading-relaxed">
-              VUVU is an independent contemporary fashion house specializing in heavyweight, engineered architectural apparel. Crafted with high-grade Egyptian cotton and designed for permanence.
-            </p>
-            <div className="mt-6 flex items-center gap-3 text-xs font-mono text-gray-500">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span>Worldwide Express Fulfillment Active</span>
+      {/* ------------------------------------------------------------------
+          Main navigation grid
+          ------------------------------------------------------------------ */}
+      <div className="container-vuvu py-16 sm:py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
+          {/* Brand Column — 4 columns */}
+          <div className="lg:col-span-4 flex flex-col justify-between">
+            <div>
+              <VuvuLogo variant="stacked" size="md" />
+              <p className="mt-6 text-xs text-muted leading-relaxed max-w-sm">
+                VUVU represents contemporary everyday clothing with a focus on
+                simplicity, comfort, considered design, and timeless
+                aesthetics.
+              </p>
+              <p className="mt-4 text-xs font-medium text-charcoal">
+                EVERYDAY, REFINED.
+              </p>
+            </div>
+            <div className="mt-8 text-[11px] text-muted">
+              Designed with Scandinavian minimalism and contemporary creative
+              identity.
             </div>
           </div>
 
-          {/* Catalog */}
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-[#315074] mb-4">
-              Catalog
-            </h4>
-            <ul className="space-y-2.5 text-xs text-gray-400">
+          {/* Shop Column — 2 columns */}
+          <div className="lg:col-span-2">
+            <h3 className="eyebrow text-charcoal mb-4">Shop</h3>
+            <ul className="space-y-2.5 text-xs text-muted">
               <li>
-                <Link href="/#products" className="hover:text-white transition-colors">
-                  All Drops
+                <Link
+                  href="/#products"
+                  className="hover:text-charcoal transition-colors link-underline"
+                >
+                  All Items
                 </Link>
               </li>
               <li>
-                <Link href="/#tees" className="hover:text-white transition-colors">
-                  Heavy Boxy Tees
+                <Link
+                  href="/#tees"
+                  className="hover:text-charcoal transition-colors link-underline"
+                >
+                  Tees & Tops
                 </Link>
               </li>
               <li>
-                <Link href="/#hoodies" className="hover:text-white transition-colors">
-                  French Terry Hoodies
+                <Link
+                  href="/#hoodies"
+                  className="hover:text-charcoal transition-colors link-underline"
+                >
+                  Hoodies
                 </Link>
               </li>
               <li>
-                <Link href="/#pants" className="hover:text-white transition-colors">
-                  Utility Trousers
+                <Link
+                  href="/#pants"
+                  className="hover:text-charcoal transition-colors link-underline"
+                >
+                  Trousers
                 </Link>
               </li>
               <li>
-                <Link href="/#jackets" className="hover:text-white transition-colors">
-                  Matte Nylon Outerwear
+                <Link
+                  href="/#jackets"
+                  className="hover:text-charcoal transition-colors link-underline"
+                >
+                  Outerwear
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/#accessories"
+                  className="hover:text-charcoal transition-colors link-underline"
+                >
+                  Accessories
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Client Services */}
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-[#315074] mb-4">
-              Client Care
-            </h4>
-            <ul className="space-y-2.5 text-xs text-gray-400">
+          {/* About Column — 2 columns */}
+          <div className="lg:col-span-2">
+            <h3 className="eyebrow text-charcoal mb-4">About VUVU</h3>
+            <ul className="space-y-2.5 text-xs text-muted">
               <li>
-                <Link href="/#lookbook" className="hover:text-white transition-colors">
-                  Size & Fit Guide
+                <Link
+                  href="/#about"
+                  className="hover:text-charcoal transition-colors link-underline"
+                >
+                  Brand Story
                 </Link>
               </li>
               <li>
-                <Link href="/#orders" className="hover:text-white transition-colors">
-                  Order Tracking
+                <Link
+                  href="/#philosophy"
+                  className="hover:text-charcoal transition-colors link-underline"
+                >
+                  Philosophy
                 </Link>
               </li>
               <li>
-                <Link href="/#shipping" className="hover:text-white transition-colors">
+                <Link
+                  href="/#campaign"
+                  className="hover:text-charcoal transition-colors link-underline"
+                >
+                  Current Campaign
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/#fabrics"
+                  className="hover:text-charcoal transition-colors link-underline"
+                >
+                  Materials & Craft
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Client Services — 2 columns */}
+          <div className="lg:col-span-2">
+            <h3 className="eyebrow text-charcoal mb-4">Client Care</h3>
+            <ul className="space-y-2.5 text-xs text-muted">
+              <li>
+                <Link
+                  href="/#shipping"
+                  className="hover:text-charcoal transition-colors link-underline"
+                >
                   Shipping & Delivery
                 </Link>
               </li>
               <li>
-                <Link href="/#returns" className="hover:text-white transition-colors">
-                  30-Day Returns Policy
+                <Link
+                  href="/#returns"
+                  className="hover:text-charcoal transition-colors link-underline"
+                >
+                  Returns & Exchanges
                 </Link>
               </li>
               <li>
-                <Link href="/#faq" className="hover:text-white transition-colors">
-                  FAQs & Care Instructions
+                <Link
+                  href="/#size-guide"
+                  className="hover:text-charcoal transition-colors link-underline"
+                >
+                  Size Guide
                 </Link>
+              </li>
+              <li>
+                <a
+                  href="mailto:care@vuvuwear.com"
+                  className="hover:text-charcoal transition-colors link-underline"
+                >
+                  Contact
+                </a>
               </li>
             </ul>
           </div>
 
-          {/* About / Manifesto */}
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-[#315074] mb-4">
-              House of Vuvu
-            </h4>
-            <ul className="space-y-2.5 text-xs text-gray-400">
+          {/* Legal / Social — 2 columns */}
+          <div className="lg:col-span-2">
+            <h3 className="eyebrow text-charcoal mb-4">Connect</h3>
+            <ul className="space-y-2.5 text-xs text-muted">
               <li>
-                <Link href="/#manifesto" className="hover:text-white transition-colors">
-                  Our Manifesto
-                </Link>
+                <a
+                  href="https://instagram.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 hover:text-charcoal transition-colors"
+                >
+                  <span>Instagram</span>
+                  <ArrowUpRight className="w-3 h-3" />
+                </a>
               </li>
               <li>
-                <Link href="/#sustainability" className="hover:text-white transition-colors">
-                  Fabric Sourcing (300+ GSM)
-                </Link>
+                <a
+                  href="https://pinterest.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 hover:text-charcoal transition-colors"
+                >
+                  <span>Pinterest</span>
+                  <ArrowUpRight className="w-3 h-3" />
+                </a>
               </li>
               <li>
-                <Link href="/#stockists" className="hover:text-white transition-colors">
-                  Stockists
-                </Link>
-              </li>
-              <li>
-                <Link href="/#contact" className="hover:text-white transition-colors">
-                  Press & Inquiries
+                <Link
+                  href="/admin"
+                  className="hover:text-charcoal transition-colors link-underline"
+                >
+                  Studio Portal
                 </Link>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-[11px] text-gray-500 gap-4">
+        {/* Bottom bar */}
+        <div className="mt-16 pt-8 border-t border-line flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-[11px] text-muted">
           <div>
-            © 2026 VUVU WEAR. All rights reserved.
+            © 2026 VUVU. All rights reserved.
           </div>
-
-          {/* Payment Method Badges */}
-          <div className="flex items-center gap-3 font-mono text-[10px] text-gray-400">
-            <span className="bg-white/10 px-2 py-1 rounded">STRIPE</span>
-            <span className="bg-white/10 px-2 py-1 rounded">APPLE PAY</span>
-            <span className="bg-white/10 px-2 py-1 rounded">VISA</span>
-            <span className="bg-white/10 px-2 py-1 rounded">MASTERCARD</span>
-            <span className="bg-[#315074] text-white px-2 py-1 rounded font-bold">CASH ON DELIVERY</span>
+          <div className="flex flex-wrap items-center gap-6">
+            <span className="hover:text-charcoal transition-colors">
+              Privacy Policy
+            </span>
+            <span className="hover:text-charcoal transition-colors">
+              Terms & Conditions
+            </span>
+            <span className="text-stone">•</span>
+            <span className="text-charcoal font-medium">USD ($)</span>
           </div>
         </div>
       </div>
     </footer>
   );
 }
-

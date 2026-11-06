@@ -1,24 +1,28 @@
 import React, { Suspense } from "react";
 import Link from "next/link";
-import { CheckCircle2, PackageCheck, Truck, ShieldCheck, ArrowRight } from "lucide-react";
+import { Check, PackageCheck, Truck, ShieldCheck, ArrowRight } from "lucide-react";
 import VuvuLogo from "@/components/ui/VuvuLogo";
 
 interface OrderSuccessProps {
   params: Promise<{ id: string }>;
 }
 
-async function OrderSuccessContent({ params }: { params: Promise<{ id: string }> }) {
+async function OrderSuccessContent({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
 
   return (
-    <div className="min-h-screen bg-[#F1F9FE] flex flex-col justify-between">
+    <div className="min-h-screen bg-ivory flex flex-col justify-between">
       {/* Top Bar */}
-      <header className="bg-white border-b border-gray-100 py-4 px-4 sm:px-8">
+      <header className="bg-white border-b border-line py-4 px-4 sm:px-8">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <VuvuLogo size="sm" />
+          <VuvuLogo variant="wordmark" size="sm" />
           <Link
             href="/"
-            className="text-xs uppercase tracking-wider font-semibold text-gray-500 hover:text-black transition-colors"
+            className="text-xs uppercase tracking-[0.12em] font-medium text-muted hover:text-charcoal transition-colors link-underline"
           >
             Back to Store
           </Link>
@@ -26,71 +30,71 @@ async function OrderSuccessContent({ params }: { params: Promise<{ id: string }>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-3xl mx-auto px-4 py-12 sm:py-16 w-full flex-1">
-        <div className="bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-gray-100">
+      <main className="max-w-3xl mx-auto px-4 py-12 sm:py-20 w-full flex-1">
+        <div className="bg-white p-6 sm:p-12 border border-line">
           {/* Header Icon */}
           <div className="text-center">
-            <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-4 border border-emerald-100">
-              <CheckCircle2 className="w-8 h-8" />
+            <div className="w-12 h-12 rounded-full bg-ivory text-vuvu-blue flex items-center justify-center mx-auto mb-5 border border-stone">
+              <Check className="w-6 h-6" strokeWidth={1.5} />
             </div>
 
-            <span className="text-xs font-mono font-bold uppercase tracking-[0.25em] text-[#315074]">
-              ORDER CONFIRMED
+            <span className="eyebrow text-vuvu-blue block mb-2">
+              Order Confirmed
             </span>
 
-            <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-black mt-2">
+            <h1 className="heading text-3xl sm:text-4xl text-charcoal">
               Thank You For Your Order
             </h1>
 
-            <p className="text-xs sm:text-sm text-gray-500 mt-2 max-w-md mx-auto leading-relaxed">
-              We have received your order. Our atelier is now hand-inspecting and packing your garments with our signature branded dust-bags.
+            <p className="text-xs sm:text-sm text-muted mt-3 max-w-md mx-auto leading-relaxed font-light">
+              We have received your order. Each garment is hand-inspected and packed in our studio with recycled archival dust-wrap.
             </p>
 
-            <div className="mt-6 inline-flex items-center gap-3 bg-[#F1F9FE] border border-[#315074]/15 px-4 py-2 rounded-lg font-mono text-xs">
-              <span className="text-gray-500">Order Reference:</span>
-              <span className="font-bold text-black uppercase">{id}</span>
+            <div className="mt-6 inline-flex items-center gap-3 bg-ivory border border-stone px-4 py-2 text-xs font-mono">
+              <span className="text-muted">Order Reference:</span>
+              <span className="font-medium text-charcoal uppercase">{id}</span>
             </div>
           </div>
 
           {/* Fulfillment Tracking Steps */}
-          <div className="mt-12 pt-8 border-t border-gray-100">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-black mb-6">
-              Delivery Progress
+          <div className="mt-12 pt-8 border-t border-line">
+            <h3 className="eyebrow text-charcoal mb-6">
+              Fulfillment Cadence
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-4 rounded-lg bg-[#F1F9FE] border border-[#315074]/20 flex items-start gap-3">
-                <PackageCheck className="w-5 h-5 text-[#315074] flex-shrink-0 mt-0.5" />
+              <div className="p-4 bg-ivory/70 border border-charcoal/20 flex items-start gap-3">
+                <PackageCheck className="w-4 h-4 text-vuvu-blue flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                 <div>
-                  <div className="text-xs font-bold text-black uppercase">
+                  <div className="text-xs font-medium uppercase tracking-wider text-charcoal">
                     1. Confirmed
                   </div>
-                  <div className="text-[11px] text-[#315074] font-semibold mt-0.5">
+                  <div className="text-[11px] text-vuvu-blue font-medium mt-0.5">
                     Order In Processing
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 flex items-start gap-3 opacity-60">
-                <Truck className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+              <div className="p-4 bg-white border border-line flex items-start gap-3 opacity-60">
+                <Truck className="w-4 h-4 text-muted flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                 <div>
-                  <div className="text-xs font-bold text-gray-700 uppercase">
+                  <div className="text-xs font-medium uppercase tracking-wider text-charcoal">
                     2. Courier Dispatch
                   </div>
-                  <div className="text-[11px] text-gray-400 mt-0.5">
-                    Estimated 24-48 hrs
+                  <div className="text-[11px] text-muted mt-0.5">
+                    Within 24–48 hours
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 flex items-start gap-3 opacity-60">
-                <ShieldCheck className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+              <div className="p-4 bg-white border border-line flex items-start gap-3 opacity-60">
+                <ShieldCheck className="w-4 h-4 text-muted flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                 <div>
-                  <div className="text-xs font-bold text-gray-700 uppercase">
+                  <div className="text-xs font-medium uppercase tracking-wider text-charcoal">
                     3. Delivered
                   </div>
-                  <div className="text-[11px] text-gray-400 mt-0.5">
-                    3–5 Business Days
+                  <div className="text-[11px] text-muted mt-0.5">
+                    3–5 business days
                   </div>
                 </div>
               </div>
@@ -98,32 +102,30 @@ async function OrderSuccessContent({ params }: { params: Promise<{ id: string }>
           </div>
 
           {/* Delivery Note */}
-          <div className="mt-8 p-4 rounded-lg bg-[#F1F9FE] border border-[#315074]/15 flex items-center justify-between text-xs text-gray-600">
-            <div>
-              <span className="font-semibold text-black">A receipt and tracking number</span> have been queued for your email address.
-            </div>
+          <div className="mt-8 p-4 bg-ivory border border-line text-xs text-muted leading-relaxed">
+            A confirmation receipt and live tracking link have been dispatched to your email address.
           </div>
 
           {/* Actions */}
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-100">
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-line">
             <Link
-              href="/"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#315074] hover:bg-[#223750] text-white px-8 py-3.5 text-xs uppercase tracking-widest font-bold rounded transition-colors"
+              href="/#products"
+              className="btn btn-primary w-full sm:w-auto"
             >
               <span>Back To Collections</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
 
-            <span className="text-xs text-gray-400 font-mono">
-              Need assistance? Email: support@vuvuwear.com
+            <span className="text-xs text-muted">
+              Client care: <a href="mailto:care@vuvuwear.com" className="text-charcoal underline">care@vuvuwear.com</a>
             </span>
           </div>
         </div>
       </main>
 
       {/* Simple Footer */}
-      <footer className="py-6 text-center text-xs text-gray-400 font-mono">
-        VUVU WEAR © 2026 • ELEVATED ESSENTIALS
+      <footer className="py-6 text-center text-xs text-muted border-t border-line bg-white">
+        VUVU — EVERYDAY, REFINED. © 2026
       </footer>
     </div>
   );
@@ -133,8 +135,8 @@ export default function OrderSuccessPage({ params }: OrderSuccessProps) {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#F1F9FE] flex items-center justify-center font-mono text-xs uppercase tracking-widest text-[#315074]">
-          Loading order details...
+        <div className="min-h-screen bg-ivory flex items-center justify-center text-xs uppercase tracking-widest text-muted">
+          Loading order details…
         </div>
       }
     >

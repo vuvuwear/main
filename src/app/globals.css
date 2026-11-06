@@ -1,51 +1,246 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   VUVU Design System
+   Scandinavian minimalism — warm ivory surfaces, charcoal type,
+   the logo's muted blue used sparingly as the signature accent.
+   ========================================================================== */
+
 @theme {
-  --color-vuvu-blue: #315074;
-  --color-vuvu-blue-light: #4872a4;
-  --color-vuvu-blue-dark: #223750;
-  --color-vuvu-ice: #F1F9FE;
+  /* Brand palette */
+  --color-vuvu-blue: #285477;
+  --color-vuvu-blue-deep: #1E3F5A;
+  --color-ivory: #F3F0E9;
+  --color-stone: #D8D1C5;
+  --color-charcoal: #292B29;
+  --color-taupe: #A9A08F;
+
+  /* Derived neutrals (tints of the palette, used for hairlines & muted copy) */
+  --color-ivory-deep: #EAE5DB;
+  --color-line: #E2DCD1;
+  --color-muted: #6E6A62;
+
+  /* Legacy aliases — kept so the admin console keeps rendering */
+  --color-vuvu-blue-light: #3C6B91;
+  --color-vuvu-blue-dark: #1E3F5A;
+  --color-vuvu-ice: #F3F0E9;
   --color-vuvu-white: #FFFFFF;
-  --color-vuvu-black: #000000;
-  --color-vuvu-gray: #6B7280;
-  --color-vuvu-border: #E2E8F0;
+  --color-vuvu-black: #292B29;
+  --color-vuvu-gray: #6E6A62;
+  --color-vuvu-border: #E2DCD1;
+
+  /* Typography */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-manrope), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Motion */
+  --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --animate-fade-in: fade-in 0.6s var(--ease-soft) both;
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
 }
 
 :root {
-  --background: #FFFFFF;
-  --foreground: #000000;
-  --primary: #315074;
+  --background: #F3F0E9;
+  --foreground: #292B29;
+  --primary: #285477;
   --primary-foreground: #FFFFFF;
-  --muted: #F1F9FE;
-  --muted-foreground: #5A6A80;
+  --muted: #EAE5DB;
+  --muted-foreground: #6E6A62;
+  --nav-height: 64px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --nav-height: 76px;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* Smooth scrolling and minimalist scrollbar */
-html {
-  scroll-behavior: smooth;
+::selection {
+  background: #285477;
+  color: #FFFFFF;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* Accessible, quiet focus ring */
+:focus-visible {
+  outline: 1.5px solid #285477;
+  outline-offset: 3px;
 }
 
-::-webkit-scrollbar-track {
-  background: #F1F9FE;
+/* --------------------------------------------------------------------------
+   Reusable primitives
+   -------------------------------------------------------------------------- */
+@layer components {
+  .container-vuvu {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .container-vuvu { padding-inline: 2rem; }
+  }
+  @media (min-width: 1280px) {
+    .container-vuvu { padding-inline: 3rem; }
+  }
+
+  /* Small uppercase label — restrained tracking */
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    line-height: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+  }
+
+  .heading {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    min-height: 3rem;
+    padding: 0 1.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: background-color 0.3s var(--ease-soft), color 0.3s var(--ease-soft),
+      border-color 0.3s var(--ease-soft), opacity 0.3s var(--ease-soft);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:disabled { cursor: not-allowed; opacity: 0.45; }
+
+  .btn-primary { background: #292B29; color: #FFFFFF; }
+  .btn-primary:not(:disabled):hover { background: #285477; }
+
+  .btn-brand { background: #285477; color: #FFFFFF; }
+  .btn-brand:not(:disabled):hover { background: #1E3F5A; }
+
+  .btn-outline { border: 1px solid #292B29; color: #292B29; background: transparent; }
+  .btn-outline:not(:disabled):hover { background: #292B29; color: #FFFFFF; }
+
+  .btn-light { background: #FFFFFF; color: #292B29; }
+  .btn-light:not(:disabled):hover { background: #F3F0E9; }
+
+  /* Underlined text link */
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.35s var(--ease-soft);
+    padding-bottom: 2px;
+  }
+  .link-underline:hover,
+  .link-underline[aria-current="page"] { background-size: 100% 1px; }
+
+  .link-underline-static {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 100% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    padding-bottom: 2px;
+    transition: opacity 0.3s var(--ease-soft);
+  }
+  .link-underline-static:hover { opacity: 0.6; }
+
+  /* Form fields */
+  .field {
+    width: 100%;
+    min-height: 3rem;
+    background: #FFFFFF;
+    border: 1px solid #D8D1C5;
+    padding: 0.75rem 0.875rem;
+    font-size: 0.875rem;
+    color: #292B29;
+    border-radius: 0;
+    transition: border-color 0.25s var(--ease-soft);
+  }
+  .field::placeholder { color: #A9A08F; }
+  .field:focus { outline: none; border-color: #292B29; }
+
+  .field-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #292B29;
+    margin-bottom: 0.375rem;
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  background: #315074;
-  border-radius: 3px;
+@layer utilities {
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #223750;
+/* --------------------------------------------------------------------------
+   Reveal-on-scroll (progressive enhancement, see components/ui/Reveal.tsx)
+   -------------------------------------------------------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.9s var(--ease-soft), transform 0.9s var(--ease-soft);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Gentle image reveal */
+.img-reveal {
+  animation: img-reveal 1.2s var(--ease-soft) both;
+}
+@keyframes img-reveal {
+  from { opacity: 0; transform: scale(1.03); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
 }
